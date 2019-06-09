@@ -31,13 +31,16 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
+        // Gets Input for player movement
         Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         moveVelocity = moveInput.normalized * speed;
 
+        // Sets Speed parameter for animations
         animation.SetFloat("Speed", Input.GetAxis("Horizontal") * speed);
+
         FireLaser();
 
-
+        // Sets Player death and audio
         if(lives.Count == 0)
         {
             AudioSource explodeSound = GameObject.Find("GameManager").GetComponent<AudioSource>();
