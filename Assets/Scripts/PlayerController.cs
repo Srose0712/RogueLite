@@ -5,11 +5,15 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     private Rigidbody2D rbody;
+    private Vector2 moveVelocity;
+
+    public Animator animation;
 
     public List<GameObject> lives;
+    public float speed;
 
-    [SerializeField]
-    private ParticleSystem flares;
+    //[SerializeField]
+    //private ParticleSystem flares;
     [SerializeField]
     private GameObject laser;
     [SerializeField]
@@ -19,35 +23,23 @@ public class PlayerController : MonoBehaviour {
    
 
 	// Use this for initialization
-	void Start () {
-
-        rbody = this.gameObject.GetComponent<Rigidbody2D>();
-
+	void Start () 
+    {
+        rbody = GetComponent<Rigidbody2D>();
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
+        Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        moveVelocity = moveInput.normalized * speed;
 
+        animation.SetFloat("Speed", Input.GetAxis("Horizontal") * speed);
         FireLaser();
 
-        bool goForward = Input.GetKey(KeyCode.W);
-        bool turnLeft = Input.GetKey(KeyCode.A);
-        bool turnRight = Input.GetKey(KeyCode.D);
 
-        if(goForward){
-            rbody.AddForce(this.transform.up * 2);
-
-            flares.Emit(1);
-        }
-        else if(turnLeft){
-            rbody.AddTorque(500);
-        }
-        else if(turnRight){
-            rbody.AddTorque(-500);
-        }
-
-        if(lives.Count == 0){
-
+        if(lives.Count == 0)
+        {
             AudioSource explodeSound = GameObject.Find("GameManager").GetComponent<AudioSource>();
             explodeSound.Play();
 
@@ -57,8 +49,14 @@ public class PlayerController : MonoBehaviour {
         }
 	}
 
-    void FireLaser(){
+    void FixedUpdate()
+    {
+        rbody.MovePosition(rbody.position + moveVelocity * Time.fixedDeltaTime);
+    }
 
+
+    void FireLaser()
+    {
         if (Input.GetKeyDown(KeyCode.Space)){
 
             laserSound.Play();
@@ -72,8 +70,8 @@ public class PlayerController : MonoBehaviour {
         
    }
 
-    private void OnCollisionEnter2D(Collision2D collision){
-
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
         if(collision.gameObject.tag == "Asteroid"){
 
             Destroy(lives[0].gameObject);
