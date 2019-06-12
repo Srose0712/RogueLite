@@ -36,8 +36,10 @@ public class PlayerController : MonoBehaviour {
         moveVelocity = moveInput.normalized * speed;
 
         // Sets Speed parameter for animations
-        animation.SetFloat("Speed", Input.GetAxis("Horizontal") * speed);
+        animation.SetFloat("XInput", Mathf.Abs(Input.GetAxisRaw("Horizontal") * speed));
+        animation.SetFloat("YInput", Mathf.Abs(Input.GetAxisRaw("Vertical") * speed));
 
+        AnimationParameters();
         FireLaser();
 
         // Sets Player death and audio
@@ -51,6 +53,39 @@ public class PlayerController : MonoBehaviour {
             Destroy(explosionClone, 0.5f);
         }
 	}
+
+    public void AnimationParameters()
+    {
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            animation.SetBool("WIsPressed", true);
+            animation.SetBool("AIsPressed", false);
+            animation.SetBool("SIsPressed", false);
+            animation.SetBool("DIsPressed", false);
+        }
+        else if(Input.GetKeyDown(KeyCode.A))
+        {
+            animation.SetBool("AIsPressed", true);
+            animation.SetBool("WIsPressed", false);
+            animation.SetBool("SIsPressed", false);
+            animation.SetBool("DIsPressed", false);
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            animation.SetBool("SIsPressed", true);
+            animation.SetBool("AIsPressed", false);
+            animation.SetBool("WIsPressed", false);
+            animation.SetBool("DIsPressed", false);
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            animation.SetBool("DIsPressed", true);
+            animation.SetBool("AIsPressed", false);
+            animation.SetBool("SIsPressed", false);
+            animation.SetBool("WIsPressed", false);
+        }
+        else { return; }
+    }
 
     void FixedUpdate()
     {
